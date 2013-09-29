@@ -3,11 +3,14 @@
 
 import math
 import requests
+import requests_cache
 import ephem
 import datetime
 from math import degrees
 import json
 from calendar import timegm
+
+requests_cache.install_cache('satellite', backend='sqlite', expire_after=300)
 
 def chunks(l, n):
     """ Yield successive n-sized chunks from l"""
@@ -19,7 +22,7 @@ def get_satellites(only_visible = True,  now=None):
     SAT_GEO = 'http://celestrak.com/NORAD/elements/geo.txt'
     SAT_DEBRIS = 'http://celestrak.com/NORAD/elements/1999-025.txt'
     # Fetch the ~100 brightest satellites
-    r = requests.get(SAT_DEBRIS)
+    r = requests.get(SAT_BRIGHTEST)
     data = r.text.split('\r\n')
     # Split each into TLE
     if only_visible:
@@ -29,7 +32,6 @@ def get_satellites(only_visible = True,  now=None):
             tle_data = get_location(tle, now = now)
             if tle_data['visible']:
                 yield tle_data
-        print 'analyzed {0} satellites; found {1} visible'.format(count, len(visible))
     else:
         for tle in chunks(data, 3):
             if len(tle) != 3:
@@ -55,8 +57,7 @@ def get_location(tle, now=None, lat=None, lng=None):
     lat = degrees(satellite.sublat)
 
     # Return the relevant timestamp and data
-    data = {"timestamp": timegm(now.timetuple()),
-            "position": {"latitude": lat,
+    data = {"position": {"latitude": lat,
                          "longitude": lon},
             "visible": float(repr(satellite.alt)) > 0 and float(repr(satellite.alt)) < math.pi,
             "range": satellite.range,
