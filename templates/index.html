@@ -43,7 +43,6 @@
                 </div>
                 <div class="pure-u-1-2">
                     <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Satellite Symphony</h1>
-
                     {% if rhythm %}
                     {% if error %}
                     <h3 style="color: red;">{{error}}</h3>
@@ -56,7 +55,7 @@
                     <h3>Generating Symphony for</h3>
                     <form data-lat="{{lat}}" data-lng="{{lng}}" id="location_form" method="get" style="margin-bottom: 1em;">
                         <input style="width: 400px; background: inherit;" name="address" type="text" value="{{address}}">
-                        <input value="Change" type="submit">
+                        <input value="Change" class="pure-button" type="submit">
                     </form>
                     <button class="pure-button pure-button-disabled" id="play">Loading..</button>
                     {% endif %}
@@ -78,6 +77,8 @@
 
             var sparksEmitter;
             var noteEmitter;
+            var lastVelocity = 1;
+            var lastVeloscale = 1;
 
             function init() {
 
@@ -155,12 +156,9 @@
                 var note_callback = function() {
 
                     var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles , blending:THREE.AdditiveBlending } );
-
                     material.color.setHSV(1, 0, 0); //0.7
-
                     note_particle = new THREE.Particle( material );
-
-                    note_particle.scale.x = note_particle.scale.y = Math.random() + 2;
+                    note_particle.scale.x = note_particle.scale.y = mapRange(lastVelocity, 1, 127, 0, (2 * lastVeloscale));
                     group.add( note_particle );
 
                     return note_particle;
@@ -201,7 +199,7 @@
                 noteEmitter.addAction(new SPARKS.Age());
                 noteEmitter.addAction(new SPARKS.Accelerate(1));
                 noteEmitter.addAction(new SPARKS.Move());
-                noteEmitter.addAction(new SPARKS.RandomDrift( 0, 10, 10 ) );
+                noteEmitter.addAction(new SPARKS.RandomDrift( 0, 3, 1 ) );
 
                 noteEmitter.addCallback("created", function(p) {
                     var position = p.position;
@@ -268,6 +266,22 @@
 
             }
 
+            function  mapRange(value, leftMin, leftMax, rightMin, rightMax){
+
+                var leftSpan = leftMax - leftMin;
+                var rightSpan = rightMax - rightMin;
+                var valueScaled = parseFloat(value - leftMin) / parseFloat(leftSpan);
+                return rightMin + (valueScaled * rightSpan);
+            }
+
+            function createNoteParticle(value, velocity, veloscale){
+
+                noteEmitterpos.y = value;
+                lastVelocity = velocity;
+                lastVeloscale = veloscale;
+                noteEmitter.createParticle();
+            }
+
             var _rotation = 0;
 
             function render() {
@@ -284,7 +298,6 @@
                 // emitterpos.y = Math.abs(80 * Math.cos((_rotation) * SPARKS.Utils.DEGREE_TO_RADIAN));
 
                 emitterpos.y = Math.random() * 100 + 10;
-                noteEmitterpos.y = Math.random() * 100 + 10;
 
                 // emitterpos.z = 50 * Math.cos((_rotation +mouseX) * SPARKS.Utils.DEGREE_TO_RADIAN);
 
