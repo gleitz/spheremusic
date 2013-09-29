@@ -14,7 +14,7 @@ def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i+n]
 
-def get_satellites():
+def get_satellites(only_visible = True,  now=None):
     SAT_BRIGHTEST = 'http://celestrak.com/NORAD/elements/visual.txt'
     SAT_GEO = 'http://celestrak.com/NORAD/elements/geo.txt'
     SAT_DEBRIS = 'http://celestrak.com/NORAD/elements/1999-025.txt'
@@ -22,17 +22,19 @@ def get_satellites():
     r = requests.get(SAT_DEBRIS)
     data = r.text.split('\r\n')
     # Split each into TLE
-    visible = []
-    count = 0
-    for tle in chunks(data, 3):
-        if len(tle) != 3:
-            continue
-        count += 1
-        tle_data = get_location(tle)
-        if tle_data['visible']:
-            visible.append(tle_data)
-    print 'analyzed {0} satellites; found {1} visible'.format(count, len(visible))
-    return visible
+    if only_visible:
+        for tle in chunks(data, 3):
+            if len(tle) != 3:
+                continue
+            tle_data = get_location(tle, now = now)
+            if tle_data['visible']:
+                yield tle_data
+        print 'analyzed {0} satellites; found {1} visible'.format(count, len(visible))
+    else:
+        for tle in chunks(data, 3):
+            if len(tle) != 3:
+                continue
+            yield get_location(tle, now = now)
 
 def get_location(tle, now=None, lat=None, lng=None):
     """Compute the current location of the ISS"""
@@ -60,4 +62,3 @@ def get_location(tle, now=None, lat=None, lng=None):
             "range": satellite.range,
             "velocity": satellite.range_velocity}
     return data
-
