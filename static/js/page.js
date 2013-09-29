@@ -70,8 +70,8 @@ var play_satellites = function() {
         tempo_bucket_width = (sat_data.max_range - sat_data.min_range) / tempo_buckets;
 
     $.each(sat_data.satellites, function(i, sat) {
-        var note_bucket = Math.floor((Math.abs(sat.velocity) - sat_data.min_velocity) / note_bucket_width),
-            tempo_bucket = Math.floor((sat.range - sat_data.min_range) / tempo_bucket_width);
+        var note_bucket = Math.floor((Math.abs(sat.velocity) - sat_data.min_velocity) / note_bucket_width) || 1,
+            tempo_bucket = Math.floor((sat.range - sat_data.min_range) / tempo_bucket_width) || 1;
         var note;
 
         var instrument = "acoustic_grand_piano";
