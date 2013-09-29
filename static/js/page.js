@@ -50,10 +50,16 @@ var playMusic = function () {
 };
 
 var fetch_satellites = function() {
-    $.get('/ajax/satellites', function(data) {
-        sat_data = data;
-        play_satellites();
-    });
+    var $location_form = $('#location_form'),
+        lat = $location_form.data('lat'),
+        lng = $location_form.data('lng');
+    $.get('/ajax/satellites',
+          {lat: lat,
+           lng: lng},
+          function(data) {
+              sat_data = data;
+              play_satellites();
+          });
 };
 
 setInterval(fetch_satellites, 1000);

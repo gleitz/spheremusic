@@ -17,7 +17,7 @@ def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i+n]
 
-def get_satellites(only_visible = True,  now=None):
+def get_satellites(only_visible = True, now=None, lat=None, lng=None):
     SAT_BRIGHTEST = 'http://celestrak.com/NORAD/elements/visual.txt'
     SAT_GEO = 'http://celestrak.com/NORAD/elements/geo.txt'
     SAT_DEBRIS = 'http://celestrak.com/NORAD/elements/1999-025.txt'
@@ -29,7 +29,7 @@ def get_satellites(only_visible = True,  now=None):
         for tle in chunks(data, 3):
             if len(tle) != 3:
                 continue
-            tle_data = get_location(tle, now = now)
+            tle_data = get_location(tle, now=now, lat=lat, lng=lng)
             if tle_data['visible']:
                 yield tle_data
     else:
