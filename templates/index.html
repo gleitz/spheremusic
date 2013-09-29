@@ -31,7 +31,7 @@
             top: 0;
             z-index: -1;
          }
-         </style>        
+         </style>
 
 </head>
 
@@ -43,6 +43,11 @@
                 <div class="pure-u-1-2">
                     <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Satellite Symphony</h1>
 
+                    <h3>Generating Symphony for</h3>
+                    <form data-lat="{{lat}}" data-lng="{{lng}}" id="location_form" method="get" style="margin-bottom: 1em;">
+                        <input style="width: 400px;" name="address" type="text" value="{{address}}">
+                        <input value="Change" type="submit">
+                    </form>
                     <button class="pure-button pure-button-disabled" id="play">Loading..</button>
 
                 </div>
@@ -59,7 +64,7 @@
             var windowHalfY = window.innerHeight / 2;
 
             var lasttime = Date.now(), elapsed;
-            
+
             var sparksEmitter;
             var noteEmitter;
 
@@ -84,7 +89,7 @@
                 // stats.domElement.style.position = 'absolute';
                 // stats.domElement.style.top = '0px';
                 // container.appendChild( stats.domElement );
-                
+
                 function generateSprite() {
 
                     var canvas = document.createElement( 'canvas' );
@@ -104,7 +109,7 @@
                     return canvas;
 
                 }
-                
+
                 //// EMITTER STUFF
                 sparksEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(20));
                 emitterpos = new THREE.Vector3(0,0,0);
@@ -119,33 +124,33 @@
 
                 noteEmitter.addInitializer(new SPARKS.Position( new SPARKS.PointZone( noteEmitterpos ) ) );
                 noteEmitter.addInitializer(new SPARKS.Lifetime(12,12));
-                
+
                 var h = 0;
-                
+
                 var callback = function() {
 
                     var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles , blending:THREE.AdditiveBlending } );
-                    
+
                     material.color.setHSV(1, 0, 0); //0.7
-                    
+
                     particle = new THREE.Particle( material );
 
                     particle.scale.x = particle.scale.y = Math.random() * .4;
-                    group.add( particle );  
+                    group.add( particle );
 
                     return particle;
                 };
-                
+
                 var note_callback = function() {
 
                     var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles , blending:THREE.AdditiveBlending } );
-                    
+
                     material.color.setHSV(1, 0, 0); //0.7
-                    
+
                     note_particle = new THREE.Particle( material );
 
                     note_particle.scale.x = note_particle.scale.y = Math.random() + 2;
-                    group.add( note_particle );  
+                    group.add( note_particle );
 
                     return note_particle;
                 };
@@ -155,29 +160,29 @@
                 sparksEmitter.addInitializer(new SPARKS.Velocity(new SPARKS.PointZone(new THREE.Vector3(-25,0,0))));
                 sparksEmitter.addAction(new SPARKS.Age());
                 sparksEmitter.addAction(new SPARKS.Accelerate(.05));
-                sparksEmitter.addAction(new SPARKS.Move()); 
+                sparksEmitter.addAction(new SPARKS.Move());
                 sparksEmitter.addAction(new SPARKS.RandomDrift( 0, 10, 10 ) );
-                
+
                 sparksEmitter.addCallback("created", function(p) {
                     var position = p.position;
-                    p.target.position = position;   
+                    p.target.position = position;
                     console.log('p emit');
                 });
-                
+
                 sparksEmitter.addCallback("initialized", function(particle) {
                     var position = p.position;
-                    p.target.position = position;   
+                    p.target.position = position;
                 });
-                
+
                 sparksEmitter.addCallback("dead", function(particle) {
                     particle.target.visible = false; // is this a work around?
-                    group.remove(particle.target); 
-                    
+                    group.remove(particle.target);
+
                 });
-                
+
                 /*
                 sparksEmitter.addCallback("updated", function(p) {
-                    
+
                 });
                 */
                 noteEmitter.addInitializer(new SPARKS.Target(null, note_callback));
@@ -185,24 +190,24 @@
                 noteEmitter.addInitializer(new SPARKS.Velocity(new SPARKS.PointZone(new THREE.Vector3(-25,0,0))));
                 noteEmitter.addAction(new SPARKS.Age());
                 noteEmitter.addAction(new SPARKS.Accelerate(1));
-                noteEmitter.addAction(new SPARKS.Move()); 
+                noteEmitter.addAction(new SPARKS.Move());
                 noteEmitter.addAction(new SPARKS.RandomDrift( 0, 10, 10 ) );
 
                 noteEmitter.addCallback("created", function(p) {
                     var position = p.position;
-                    p.target.position = position;  
-                    console.log('note emit'); 
+                    p.target.position = position;
+                    console.log('note emit');
                 });
-                
+
                 noteEmitter.addCallback("initialized", function(particle) {
                     var position = p.position;
-                    p.target.position = position;   
+                    p.target.position = position;
                 });
-                
+
                 noteEmitter.addCallback("dead", function(particle) {
                     particle.target.visible = false; // is this a work around?
-                    group.remove(particle.target); 
-                    
+                    group.remove(particle.target);
+
                 });
 
                 sparksEmitter.start();
@@ -246,27 +251,27 @@
                 elapsed = time - lasttime;
                 //console.log( elapsed, time,lasttime );
                 lasttime = time;
-                
+
                 //sparksEmitter.update(elapsed / 1000);
-            
+
                 requestAnimationFrame( animate );
 
                 render();
 
             }
-            
+
             var _rotation = 0;
 
             function render() {
 
                 // camera.position.x += ( mouseX - camera.position.x ) * 0.05;
                 // camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
-                // 
+                //
                 // group.rotation.x += 0.01;
                 // group.rotation.y += 0.02;
-                
+
                 _rotation += 2;
-                
+
                 // emitterpos.x = 100 * Math.sin((_rotation ) * SPARKS.Utils.DEGREE_TO_RADIAN);
                 // emitterpos.y = Math.abs(80 * Math.cos((_rotation) * SPARKS.Utils.DEGREE_TO_RADIAN));
 
@@ -274,7 +279,7 @@
                 noteEmitterpos.y = Math.random() * 100 + 10;
 
                 // emitterpos.z = 50 * Math.cos((_rotation +mouseX) * SPARKS.Utils.DEGREE_TO_RADIAN);
-                
+
                 renderer.render( scene, camera );
 
             }
@@ -285,7 +290,7 @@
                 animate();
 
                 $('#play').click(function() {
-                    
+
                 });
 
             });
