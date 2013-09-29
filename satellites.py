@@ -1,3 +1,6 @@
+# Symphony of the Satellites
+# https://hackpad.com/Symphony-of-the-Satellites-c0aGX4vfmTN
+
 import math
 import requests
 import ephem
