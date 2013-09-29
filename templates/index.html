@@ -17,15 +17,22 @@
 
          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 
+        <script type="text/javascript" src="/static/js/Three.js"></script>
+        <script type="text/javascript" src="/static/js/RequestAnimationFrame.js"></script>
+        <script type="text/javascript" src="/static/js/Stats.js"></script>
+        <script type="text/javascript" src="/static/js/Tween.js"></script>
+        <script type="text/javascript" src="/static/js/Sparks.js"></script>
+        <script type="text/javascript" src="/static/js/CanvasShaders.js"></script>
+
 </head>
 
-<body>
+<body style="overflow: hidden">
         <div class="pure-g-r">
                 <div class="pure-u-1-2">
                     <img src="http://i.imgur.com/K7JmNq3.png">
                 </div>
                 <div class="pure-u-1-2">
-                    <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 48pt; font-weight: normal;">Symphony of Satellites</h1>
+                    <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Satellite Symphony</h1>
 
                     <button class="pure-button pure-button-disabled" id="play">Loading..</button>
 
@@ -64,6 +71,203 @@
         };
 
         </script>
+
+        <style>
+         #viz{
+            position: absolute;
+            top: 0;
+            z-index: -1;
+
+         }
+         </style>
+
+        <script type="text/javascript">
+            // Inspired from http://wonderfl.net/c/qTwn and mr doob three.js examples
+
+            var container, stats;
+            var camera, scene, renderer, group, particle;
+            var mouseX = 0, mouseY = 0;
+
+            var windowHalfX = window.innerWidth / 2;
+            var windowHalfY = window.innerHeight / 2;
+
+            var lasttime = Date.now(), elapsed;
+            
+            init();
+            animate();
+            
+            var sparksEmitter;
+
+            function init() {
+
+                container = document.createElement( 'div' );
+                container.setAttribute("id", "viz");
+                document.body.appendChild( container );
+
+                camera = new THREE.Camera( 75, window.innerWidth / window.innerHeight, 1, 300 );
+                camera.position.z = 150; //1000
+
+                scene = new THREE.Scene();
+                group = new THREE.Object3D();
+                scene.add( group );
+
+                renderer = new THREE.CanvasRenderer();
+                renderer.setSize( window.innerWidth*2.2, window.innerHeight*2.2 );
+                container.appendChild( renderer.domElement );
+
+                // stats = new Stats();
+                // stats.domElement.style.position = 'absolute';
+                // stats.domElement.style.top = '0px';
+                // container.appendChild( stats.domElement );
+                
+                function generateSprite() {
+
+                    var canvas = document.createElement( 'canvas' );
+                    canvas.width = 16;
+                    canvas.height = 16;
+
+                    var context = canvas.getContext( '2d' );
+                    var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+                    gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
+                    gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
+                    gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
+                    gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
+
+                    context.fillStyle = gradient;
+                    context.fillRect( 0, 0, canvas.width, canvas.height );
+
+                    return canvas;
+
+                }
+                
+                //// EMITTER STUFF
+                sparksEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(50));
+                emitterpos = new THREE.Vector3(0,0,0);
+                var sphereCap = new SPARKS.SphereCapZone(10, 10, 10, 10, 10, 10);
+
+                sparksEmitter.addInitializer(new SPARKS.Position( new SPARKS.PointZone( emitterpos ) ) );
+                sparksEmitter.addInitializer(new SPARKS.Lifetime(12,12));
+                
+                var h = 0;
+                
+                var callback = function() {
+
+                    var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles , blending:THREE.AdditiveBlending } );
+                    
+                    material.color.setHSV(1, 0, 0); //0.7
+                    
+                    particle = new THREE.Particle( material );
+
+                    particle.scale.x = particle.scale.y = Math.random();
+                    group.add( particle );  
+
+                    return particle;
+                };
+                
+
+                sparksEmitter.addInitializer(new SPARKS.Target(null, callback));
+                //sparksEmitter.addInitializer(new SPARKS.Velocity(sphereCap));
+                sparksEmitter.addInitializer(new SPARKS.Velocity(new SPARKS.PointZone(new THREE.Vector3(-25,0,0))));
+                sparksEmitter.addAction(new SPARKS.Age());
+                sparksEmitter.addAction(new SPARKS.Accelerate(.05));
+                sparksEmitter.addAction(new SPARKS.Move()); 
+                sparksEmitter.addAction(new SPARKS.RandomDrift( 0, 10, 10 ) );
+                
+                sparksEmitter.addCallback("created", function(p) {
+                    var position = p.position;
+                    p.target.position = position;   
+                });
+                
+                sparksEmitter.addCallback("initialized", function(particle) {
+                    var position = p.position;
+                    p.target.position = position;   
+                });
+                
+                sparksEmitter.addCallback("dead", function(particle) {
+                    particle.target.visible = false; // is this a work around?
+                    group.remove(particle.target); 
+                    
+                });
+                
+                /*
+                sparksEmitter.addCallback("updated", function(p) {
+                    
+                });
+                */
+                sparksEmitter.start();
+            }
+
+            //
+
+            function onDocumentMouseMove( event ) {
+
+                mouseX = event.clientX - windowHalfX;
+                mouseY = event.clientY - windowHalfY;
+            }
+
+            function onDocumentTouchStart( event ) {
+
+                if ( event.touches.length == 1 ) {
+
+                    event.preventDefault();
+
+                    mouseX = event.touches[ 0 ].pageX - windowHalfX;
+                    mouseY = event.touches[ 0 ].pageY - windowHalfY;
+                }
+            }
+
+            function onDocumentTouchMove( event ) {
+
+                if ( event.touches.length == 1 ) {
+
+                    event.preventDefault();
+
+                    mouseX = event.touches[ 0 ].pageX - windowHalfX;
+                    mouseY = event.touches[ 0 ].pageY - windowHalfY;
+                }
+            }
+
+            function animate(time) {
+                if (!time) {
+                    time = Date.now();
+                }
+                elapsed = time - lasttime;
+                //console.log( elapsed, time,lasttime );
+                lasttime = time;
+                
+                //sparksEmitter.update(elapsed / 1000);
+            
+                requestAnimationFrame( animate );
+
+                render();
+
+            }
+            
+            var _rotation = 0;
+
+            function render() {
+
+                // camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+                // camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
+                // 
+                // group.rotation.x += 0.01;
+                // group.rotation.y += 0.02;
+                
+                _rotation += 2;
+                
+                // emitterpos.x = 100 * Math.sin((_rotation ) * SPARKS.Utils.DEGREE_TO_RADIAN);
+                // emitterpos.y = Math.abs(80 * Math.cos((_rotation) * SPARKS.Utils.DEGREE_TO_RADIAN));
+
+                emitterpos.y = Math.random() * 100 + 10;
+
+                // emitterpos.z = 50 * Math.cos((_rotation +mouseX) * SPARKS.Utils.DEGREE_TO_RADIAN);
+                
+                renderer.render( scene, camera );
+
+            }
+
+        </script>
+
 </body>
 
 </html>
