@@ -4,6 +4,6 @@
 
 Works best in Chrome, but must be played from a webserver:
 
-    python -m SimpleHTTPServer
+    python app.py [debug]
 
 Based on MIDI.js
