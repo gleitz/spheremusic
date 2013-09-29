@@ -11,8 +11,5 @@ def get():
             yield satellite
 
 df = pandas.DataFrame(list(get()))
-for coord in ['longitude', 'latitude']:
-    df[coord] = df['position'].map(lambda x: x[coord])
-del df['position']
 del df['visible']
 df.to_csv('weekly.csv', index = False)
