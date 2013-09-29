@@ -23,11 +23,9 @@ def get_satellites(only_visible = True,  now=None):
     data = r.text.split('\r\n')
     # Split each into TLE
     if only_visible:
-        count = 0
         for tle in chunks(data, 3):
             if len(tle) != 3:
                 continue
-            count += 1
             tle_data = get_location(tle, now = now)
             if tle_data['visible']:
                 yield tle_data
@@ -36,7 +34,6 @@ def get_satellites(only_visible = True,  now=None):
         for tle in chunks(data, 3):
             if len(tle) != 3:
                 continue
-            count += 1
             yield get_location(tle, now = now)
 
 def get_location(tle, now=None, lat=None, lng=None):
