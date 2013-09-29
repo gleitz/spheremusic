@@ -9,39 +9,31 @@ function getRandomArbitary(min, max) {
 }
 
 var playNoteAt = function(n) {
-    $.each(notes, function(i, e) {
-        var note_data = e[0],
-            note_instrument = e[1];
-        var velocity = getRandomArbitary(0, 127);
 
-        var value = note_data[n];
+    var note_data;
+    var note_instrument;
+    var velocity;
+    var value;
+
+    $.each(notes, function(i, e) {
+        note_data = e[0];
+        note_instrument = e[1];
+        velocity = getRandomArbitary(0, 127);
+        value = note_data[n];
+
         if (note_instrument == "acoustic_grand_piano") {
             value = value + MIDI.pianoKeyOffset;
             MIDI.programChange(0, 0);
+            createNoteParticle(value, velocity, 1);
         } else {
             MIDI.programChange(0, 118);
+            createNoteParticle(value, velocity, 1.1);
         }
         MIDI.noteOn(0, value, velocity);
     });
-    noteEmitter.createParticle();
 };
 
 var playMusic = function () {
-
-    MIDI.Player.addListener(function(data) { // set it to your own function!
-
-        var now = data.now; // where we are now
-        var end = data.end; // time when song ends
-        var channel = data.channel; // channel note is playing on
-        var message = data.message; // 128 is noteOff, 144 is noteOn
-        var note = data.note; // the note
-        var velocity = data.velocity; // the velocity of the note
-        // then do whatever you want with the information!
-
-        console.log(note);
-        console.log(velocity);
-
-    });
 
     var n = 0;
     playNoteAt(n);
