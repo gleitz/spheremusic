@@ -3,6 +3,7 @@ import sys
 import satellites
 
 app = Flask(__name__)
+app.config.from_object({'SEND_FILE_MAX_AGE_DEFAULT': 0})
 
 def _success():
     return render_template('template.html',
@@ -20,7 +21,7 @@ def home():
 
 @app.route("/ajax/satellites", methods = ['GET'])
 def ajax_satellites():
-    sats = list(satellites.get_satellites())
+    sats = list(satellites.get_satellites())[:20]
     min_velocity = sys.maxint
     max_velocity = 0
     min_range = sys.maxint
