@@ -47,13 +47,12 @@
 			});
 
 		  	$('#play').click(function() {
-				playScale();
+				playMusic();
 			});
-
 
 		});
 
-		playScale = function () {
+		playMusic = function () {
 			MIDI.programChange(0, 0);
 			for (var n = 0; n < 100; n ++) {
 				var delay = n / 4; // play one note every quarter second
