@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, url_for
 import sys
+import satellites
 
 app = Flask(__name__)
 
@@ -17,24 +18,11 @@ def _final():
 def home():
     return render_template('index.html')
 
-@app.route("/next", methods = ['GET', 'POST'])
-def login():
-    if request.method == 'GET' or not request.form.get('nextState'):
-        return _nedry()
-    next_state = request.form['nextState']
-    if next_state.lower() == 'rickrolle':
-        return _final()
-    current_page = -1
-    for i, word in enumerate(rhyme):
-        if sha1(word) == next_state:
-            current_page = i
-    if current_page == -1:
-        return _nedry()
-    print "current page is", current_page
-    next_page = current_page + 1
-    if next_page >= len(RICK_PIECES):
-        return _success()
-    return _get_piece(next_page)
+@app.route("/ajax/satellites", methods = ['GET'])
+def ajax_satellites():
+    sats = satellites.get_satellites()
+    print sats
+    return jsonify(results=list(sats))
 
 if __name__ == "__main__":
     debug = False
