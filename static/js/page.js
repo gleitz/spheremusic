@@ -19,7 +19,7 @@ var playNoteAt = function(n) {
     $.each(notes, function(i, e) {
         note_data = e[0];
         note_instrument = e[1];
-        velocity = getRandomArbitary(0, 127);
+        velocity = getRandomArbitary(30, 127);
         value = note_data[n];
         if (note_instrument == "acoustic_grand_piano") {
             value = value + MIDI.pianoKeyOffset;
