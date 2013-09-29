@@ -14,7 +14,7 @@ Usage
     pip install -r requirements.txt
     python app.py [debug]
 
-Based on MIDI.js
+Then visit [http://localhost:1337](http://localhost:1337).
 
 Authors
 ------
