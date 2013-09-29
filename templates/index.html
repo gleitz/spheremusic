@@ -25,6 +25,14 @@
         <script type="text/javascript" src="/static/js/CanvasShaders.js"></script>
         <script src="/static/js/page.js" type="text/javascript"></script>
 
+        <style>
+         #viz{
+            position: absolute;
+            top: 0;
+            z-index: -1;
+         }
+         </style>        
+
 </head>
 
 <body style="overflow: hidden">
@@ -40,20 +48,11 @@
                 </div>
         </div>
 
-        <style>
-         #viz{
-            position: absolute;
-            top: 0;
-            z-index: -1;
-
-         }
-         </style>
-
         <script type="text/javascript">
             // Inspired from http://wonderfl.net/c/qTwn and mr doob three.js examples
 
             var container, stats;
-            var camera, scene, renderer, group, particle;
+            var camera, scene, renderer, group, particle, note_particle;
             var mouseX = 0, mouseY = 0;
 
             var windowHalfX = window.innerWidth / 2;
@@ -61,10 +60,8 @@
 
             var lasttime = Date.now(), elapsed;
             
-            init();
-            animate();
-            
             var sparksEmitter;
+            var noteEmitter;
 
             function init() {
 
@@ -109,12 +106,19 @@
                 }
                 
                 //// EMITTER STUFF
-                sparksEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(50));
+                sparksEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(20));
                 emitterpos = new THREE.Vector3(0,0,0);
                 var sphereCap = new SPARKS.SphereCapZone(10, 10, 10, 10, 10, 10);
 
                 sparksEmitter.addInitializer(new SPARKS.Position( new SPARKS.PointZone( emitterpos ) ) );
                 sparksEmitter.addInitializer(new SPARKS.Lifetime(12,12));
+
+                noteEmitter = new SPARKS.Emitter(new SPARKS.SteadyCounter(0));
+                noteEmitterpos = new THREE.Vector3(0,0,0);
+                var noteSphereCap = new SPARKS.SphereCapZone(10, 10, 10, 10, 10, 10);
+
+                noteEmitter.addInitializer(new SPARKS.Position( new SPARKS.PointZone( noteEmitterpos ) ) );
+                noteEmitter.addInitializer(new SPARKS.Lifetime(12,12));
                 
                 var h = 0;
                 
@@ -126,12 +130,25 @@
                     
                     particle = new THREE.Particle( material );
 
-                    particle.scale.x = particle.scale.y = Math.random();
+                    particle.scale.x = particle.scale.y = Math.random() * .4;
                     group.add( particle );  
 
                     return particle;
                 };
                 
+                var note_callback = function() {
+
+                    var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles , blending:THREE.AdditiveBlending } );
+                    
+                    material.color.setHSV(1, 0, 0); //0.7
+                    
+                    note_particle = new THREE.Particle( material );
+
+                    note_particle.scale.x = note_particle.scale.y = Math.random() + 2;
+                    group.add( note_particle );  
+
+                    return note_particle;
+                };
 
                 sparksEmitter.addInitializer(new SPARKS.Target(null, callback));
                 //sparksEmitter.addInitializer(new SPARKS.Velocity(sphereCap));
@@ -144,6 +161,7 @@
                 sparksEmitter.addCallback("created", function(p) {
                     var position = p.position;
                     p.target.position = position;   
+                    console.log('p emit');
                 });
                 
                 sparksEmitter.addCallback("initialized", function(particle) {
@@ -162,7 +180,33 @@
                     
                 });
                 */
+                noteEmitter.addInitializer(new SPARKS.Target(null, note_callback));
+                //sparksEmitter.addInitializer(new SPARKS.Velocity(sphereCap));
+                noteEmitter.addInitializer(new SPARKS.Velocity(new SPARKS.PointZone(new THREE.Vector3(-25,0,0))));
+                noteEmitter.addAction(new SPARKS.Age());
+                noteEmitter.addAction(new SPARKS.Accelerate(1));
+                noteEmitter.addAction(new SPARKS.Move()); 
+                noteEmitter.addAction(new SPARKS.RandomDrift( 0, 10, 10 ) );
+
+                noteEmitter.addCallback("created", function(p) {
+                    var position = p.position;
+                    p.target.position = position;  
+                    console.log('note emit'); 
+                });
+                
+                noteEmitter.addCallback("initialized", function(particle) {
+                    var position = p.position;
+                    p.target.position = position;   
+                });
+                
+                noteEmitter.addCallback("dead", function(particle) {
+                    particle.target.visible = false; // is this a work around?
+                    group.remove(particle.target); 
+                    
+                });
+
                 sparksEmitter.start();
+                noteEmitter.start();
             }
 
             //
@@ -227,12 +271,24 @@
                 // emitterpos.y = Math.abs(80 * Math.cos((_rotation) * SPARKS.Utils.DEGREE_TO_RADIAN));
 
                 emitterpos.y = Math.random() * 100 + 10;
+                noteEmitterpos.y = Math.random() * 100 + 10;
 
                 // emitterpos.z = 50 * Math.cos((_rotation +mouseX) * SPARKS.Utils.DEGREE_TO_RADIAN);
                 
                 renderer.render( scene, camera );
 
             }
+
+            $(document).ready(function() {
+
+                init();
+                animate();
+
+                $('#play').click(function() {
+                    
+                });
+
+            });
 
         </script>
 </body>

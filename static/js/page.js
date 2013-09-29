@@ -22,8 +22,8 @@ var playNoteAt = function(n) {
             MIDI.programChange(0, 118);
         }
         MIDI.noteOn(0, value, velocity);
-        noteEmitter.createParticle();
     });
+    noteEmitter.createParticle();
 };
 
 var playMusic = function () {
