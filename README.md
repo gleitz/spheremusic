@@ -1,4 +1,4 @@
-# Satellite Symphony
+# Symphony of Satellites
 
 ## Science Hack Day SF 2013
 
