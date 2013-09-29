@@ -12,10 +12,27 @@ var playNoteAt = function(n) {
     $.each(notes, function(i, e) {
         var velocity = getRandomArbitary(0, 127);
         MIDI.noteOn(0, MIDI.pianoKeyOffset + e[n], velocity);
+        noteEmitter.createParticle();
     });
 };
 
 var playMusic = function () {
+
+    MIDI.Player.addListener(function(data) { // set it to your own function!
+
+        var now = data.now; // where we are now
+        var end = data.end; // time when song ends
+        var channel = data.channel; // channel note is playing on
+        var message = data.message; // 128 is noteOff, 144 is noteOn
+        var note = data.note; // the note
+        var velocity = data.velocity; // the velocity of the note
+        // then do whatever you want with the information!
+
+        console.log(note);
+        console.log(velocity);
+
+    });
+
     var n = 0;
     playNoteAt(n);
     n = (n + 1) % 16;
