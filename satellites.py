@@ -3,11 +3,14 @@
 
 import math
 import requests
+import requests_cache
 import ephem
 import datetime
 from math import degrees
 import json
 from calendar import timegm
+
+requests_cache.install_cache('satellite', backend='sqlite', expire_after=300)
 
 def chunks(l, n):
     """ Yield successive n-sized chunks from l"""
@@ -19,7 +22,7 @@ def get_satellites(only_visible = True,  now=None):
     SAT_GEO = 'http://celestrak.com/NORAD/elements/geo.txt'
     SAT_DEBRIS = 'http://celestrak.com/NORAD/elements/1999-025.txt'
     # Fetch the ~100 brightest satellites
-    r = requests.get(SAT_DEBRIS)
+    r = requests.get(SAT_BRIGHTEST)
     data = r.text.split('\r\n')
     # Split each into TLE
     if only_visible:

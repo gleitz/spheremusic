@@ -3,3 +3,5 @@
 *.egg-info
 *~
 .ropeproject
+.tern-port
+satellite.sqlite

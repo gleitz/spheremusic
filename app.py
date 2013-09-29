@@ -20,9 +20,27 @@ def home():
 
 @app.route("/ajax/satellites", methods = ['GET'])
 def ajax_satellites():
-    sats = satellites.get_satellites()
-    print sats
-    return jsonify(results=list(sats))
+    sats = list(satellites.get_satellites())
+    min_velocity = sys.maxint
+    max_velocity = 0
+    min_range = sys.maxint
+    max_range = 0
+    for sat in sats:
+        velocity = abs(sat['velocity'])
+        if velocity > max_velocity:
+            max_velocity = velocity
+        if velocity < min_velocity:
+            min_velocity = velocity
+        if sat['range'] > max_range:
+            max_range = sat['range']
+        if sat['range'] < min_range:
+            min_range = sat['range']
+
+    return jsonify({'satellites': sats,
+                    'min_velocity': min_velocity,
+                    'max_velocity': max_velocity,
+                    'min_range': min_range,
+                    'max_range': max_range})
 
 if __name__ == "__main__":
     debug = False
