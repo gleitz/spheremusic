@@ -70,6 +70,8 @@ var arrayOf = function(n, times) {
 
 var play_satellites = function() {
     notes = [];
+    var $satellites = $('#satellites');
+    $satellites.empty();
     var note_buckets = piano_minor.length - 1,
         note_bucket_width = (sat_data.max_velocity - sat_data.min_velocity) / note_buckets,
         tempo_buckets = 4,
@@ -98,6 +100,7 @@ var play_satellites = function() {
             note = [this_note, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
         }
         notes.push([note, instrument]);
+        $satellites.append($('<li>', {text: sat.name}));
     });
 };
 

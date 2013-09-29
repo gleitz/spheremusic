@@ -57,9 +57,12 @@ def get_location(tle, now=None, lat=None, lng=None):
     lat = degrees(satellite.sublat)
 
     # Return the relevant timestamp and data
-    data = {"position": {"latitude": lat,
-                         "longitude": lon},
-            "visible": float(repr(satellite.alt)) > 0 and float(repr(satellite.alt)) < math.pi,
-            "range": satellite.range,
-            "velocity": satellite.range_velocity}
+    data = {'position': {'latitude': lat,
+                         'longitude': lon},
+            'visible': float(repr(satellite.alt)) > 0 and float(repr(satellite.alt)) < math.pi,
+            'altitude': satellite.alt,
+            'azimuth': satellite.az,
+            'range': satellite.range,
+            'velocity': satellite.range_velocity,
+            'name': satellite.name}
     return data

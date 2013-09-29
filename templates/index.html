@@ -39,13 +39,14 @@
         <div class="pure-g-r">
                 <div class="pure-u-1-2">
                     <img src="http://i.imgur.com/K7JmNq3.png">
+                    <ul id="satellites"></ul>
                 </div>
                 <div class="pure-u-1-2">
                     <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Satellite Symphony</h1>
 
                     <h3>Generating Symphony for</h3>
                     <form data-lat="{{lat}}" data-lng="{{lng}}" id="location_form" method="get" style="margin-bottom: 1em;">
-                        <input style="width: 400px;" name="address" type="text" value="{{address}}">
+                        <input style="width: 400px; background: inherit;" name="address" type="text" value="{{address}}">
                         <input value="Change" type="submit">
                     </form>
                     <button class="pure-button pure-button-disabled" id="play">Loading..</button>
