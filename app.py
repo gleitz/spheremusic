@@ -46,4 +46,4 @@ if __name__ == "__main__":
     debug = False
     if len(sys.argv) > 1 and sys.argv[1] == 'debug':
         debug = True
-    app.run(host='0.0.0.0', debug=debug, port=1337)
+    app.run(host='0.0.0.0', debug=debug, port=1338)

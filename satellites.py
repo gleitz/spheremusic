@@ -10,7 +10,7 @@ from math import degrees
 import json
 from calendar import timegm
 
-requests_cache.install_cache('satellite', backend='sqlite', expire_after=300)
+requests_cache.install_cache('satellite', backend='memory', expire_after=300)
 
 def chunks(l, n):
     """ Yield successive n-sized chunks from l"""
