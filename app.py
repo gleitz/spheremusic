@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, url_for, redirect
 import sys
+import json
 import satellites
 import pygeoip
 from pygeocoder import Geocoder
@@ -13,6 +14,15 @@ GIC  = pygeoip.GeoIP('ip_database/GeoLiteCity.dat')
 def home():
     lat = None
     lng = None
+    rhythm = request.args.get('rhythm')
+    error = ''
+    try:
+        if rhythm:
+            rhythm = json.loads(rhythm)
+            rhythm = json.dumps(rhythm, indent=4, sort_keys=True)
+    except Exception, e:
+        print e
+        error = "Invalid JSON!"
     address = request.args.get('address')
     if address:
         results = Geocoder.geocode(address)
@@ -31,8 +41,8 @@ def home():
     if not lat and not lng:
         lat = 37.7701
         lng = -122.4664
-        address = '({0}, {1})'.format(lat, lng)
-    return render_template('index.html', lat=lat, lng=lng, address=address)
+        address = 'California Academy of Sciences, San Francisco, CA'.format(lat, lng)
+    return render_template('index.html', lat=lat, lng=lng, address=address, rhythm=rhythm, error=error)
 
 @app.route("/ajax/satellites", methods = ['GET'])
 def ajax_satellites():

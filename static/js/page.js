@@ -2,7 +2,8 @@
 var sat_data,
     notes = [],
     piano_minor = [0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60, 63, 67, 72, 75, 79, 84, 87, 91, 96, 99, 103, 108, 111, 115, 120, 123, 127],
-    drums = [36];
+    drums = [36],
+    n = 0;
 
 function getRandomArbitary(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
@@ -13,7 +14,6 @@ var playNoteAt = function(n) {
         var note_data = e[0],
             note_instrument = e[1];
         var velocity = getRandomArbitary(0, 127);
-
         var value = note_data[n];
         if (note_instrument == "acoustic_grand_piano") {
             value = value + MIDI.pianoKeyOffset;
@@ -38,18 +38,18 @@ var playMusic = function () {
         var velocity = data.velocity; // the velocity of the note
         // then do whatever you want with the information!
 
-        console.log(note);
-        console.log(velocity);
-
     });
 
-    var n = 0;
     playNoteAt(n);
     n = (n + 1) % 16;
     setTimeout(playMusic, 250);
 };
 
 var fetch_satellites = function() {
+    var rhythm = $('#rhythm').val();
+    if (rhythm) {
+        return;
+    }
     var $location_form = $('#location_form'),
         lat = $location_form.data('lat'),
         lng = $location_form.data('lng');
@@ -113,6 +113,27 @@ $(document).ready(function() {
             $('#play').html('\u25B6 Play');
             $('#play').removeClass('pure-button-disabled');
             $('#play').addClass('pure-button-primary');
+            var rhythm = $('#rhythm').val();
+            if (rhythm) {
+                var rhythm_json = JSON.parse(rhythm);
+                var new_sequence = [];
+                for (var key in rhythm_json.sequence) {
+                    var value = rhythm_json.sequence[key];
+                    if (value == "*") {
+                        if (rhythm_json.instrument == "synth_drum") {
+                            new_sequence.push(36 + getRandomArbitary(0, 25));
+                        } else if (rhythm_json.instrument == "acoustic_grand_piano") {
+                            new_sequence.push(getRandomArbitary(0, 128));
+                        }
+                    } else if (rhythm_json.notes[value]) {
+                        new_sequence.push(rhythm_json.notes[value]);
+                    } else {
+                        new_sequence.push(value);
+                    }
+                }
+                notes = [[new_sequence, rhythm_json.instrument]];
+                playMusic();
+            }
         }
     });
 

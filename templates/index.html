@@ -35,7 +35,7 @@
 
 </head>
 
-<body style="overflow: hidden">
+<body style="overflow: hidden" data-rhythm="{{rhythm}}">
         <div class="pure-g-r">
                 <div class="pure-u-1-2">
                     <img src="http://i.imgur.com/K7JmNq3.png">
@@ -44,12 +44,22 @@
                 <div class="pure-u-1-2">
                     <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Satellite Symphony</h1>
 
+                    {% if rhythm %}
+                    {% if error %}
+                    <h3 style="color: red;">{{error}}</h3>
+                    {% endif %}
+                    <form method="get">
+                    <textarea rows="30" id="rhythm" cols="50" name="rhythm">{{ rhythm }}</textarea>
+                    <input value="Submit" type="submit">
+                    </form>
+                    {% else %}
                     <h3>Generating Symphony for</h3>
                     <form data-lat="{{lat}}" data-lng="{{lng}}" id="location_form" method="get" style="margin-bottom: 1em;">
                         <input style="width: 400px; background: inherit;" name="address" type="text" value="{{address}}">
                         <input value="Change" type="submit">
                     </form>
                     <button class="pure-button pure-button-disabled" id="play">Loading..</button>
+                    {% endif %}
 
                 </div>
         </div>
@@ -167,7 +177,6 @@
                 sparksEmitter.addCallback("created", function(p) {
                     var position = p.position;
                     p.target.position = position;
-                    console.log('p emit');
                 });
 
                 sparksEmitter.addCallback("initialized", function(particle) {
@@ -197,7 +206,6 @@
                 noteEmitter.addCallback("created", function(p) {
                     var position = p.position;
                     p.target.position = position;
-                    console.log('note emit');
                 });
 
                 noteEmitter.addCallback("initialized", function(particle) {
@@ -250,7 +258,6 @@
                     time = Date.now();
                 }
                 elapsed = time - lasttime;
-                //console.log( elapsed, time,lasttime );
                 lasttime = time;
 
                 //sparksEmitter.update(elapsed / 1000);
