@@ -1,7 +1,7 @@
 /*global $ MIDI $SCRIPT_ROOT */
 var sat_data,
     notes = [],
-    piano_minor = [0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60, 63, 67, 72, 75, 79, 84, 87, 91, 96, 99, 103, 108, 111, 115, 120, 123, 127],
+    piano_minor = [0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60, 63, 67, 72, 75, 79, 84, 87],
     drums = [36],
     n = 0;
 
@@ -79,7 +79,7 @@ var play_satellites = function() {
         var instrument = "acoustic_grand_piano";
         var this_note = piano_minor[note_bucket];
         if (Math.random() < 0.15) {
-            this_note = 21 + getRandomArbitary(0, 87);
+            this_note = MIDI.pianoKeyOffset + getRandomArbitary(0, 87);
             instrument = "synth_drum";
         }
         if (tempo_bucket == 4) {
@@ -115,7 +115,7 @@ $(document).ready(function() {
                     var value = rhythm_json.sequence[key];
                     if (value == "*") {
                         if (rhythm_json.instrument == "synth_drum") {
-                            new_sequence.push(21 + getRandomArbitary(0, 87));
+                            new_sequence.push(MIDI.pianoKeyOffset + getRandomArbitary(0, 87));
                         } else if (rhythm_json.instrument == "acoustic_grand_piano") {
                             new_sequence.push(getRandomArbitary(0, 128));
                         }
