@@ -79,7 +79,7 @@ var play_satellites = function() {
         var instrument = "acoustic_grand_piano";
         var this_note = piano_minor[note_bucket];
         if (Math.random() < 0.15) {
-            this_note = 36 + getRandomArbitary(0, 25);
+            this_note = 21 + getRandomArbitary(0, 87);
             instrument = "synth_drum";
         }
         if (tempo_bucket == 4) {
@@ -115,7 +115,7 @@ $(document).ready(function() {
                     var value = rhythm_json.sequence[key];
                     if (value == "*") {
                         if (rhythm_json.instrument == "synth_drum") {
-                            new_sequence.push(36 + getRandomArbitary(0, 25));
+                            new_sequence.push(21 + getRandomArbitary(0, 87));
                         } else if (rhythm_json.instrument == "acoustic_grand_piano") {
                             new_sequence.push(getRandomArbitary(0, 128));
                         }
