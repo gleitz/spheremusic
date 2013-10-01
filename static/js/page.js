@@ -3,7 +3,8 @@ var sat_data,
     notes = [],
     piano_minor = [0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60, 63, 67, 72, 75, 79, 84, 87, 91, 96, 99, 103, 108, 111, 115, 120, 123, 127],
     drums = [36],
-    n = 0;
+    n = 0,
+    drum_enabled = false;
 
 function getRandomArbitary(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
@@ -78,7 +79,7 @@ var play_satellites = function() {
 
         var instrument = "acoustic_grand_piano";
         var this_note = piano_minor[note_bucket];
-        if (Math.random() < 0.15) {
+        if (Math.random() < 0.15 && drum_enabled) {
             this_note = 36 + getRandomArbitary(0, 25);
             instrument = "synth_drum";
         }
@@ -100,36 +101,45 @@ var play_satellites = function() {
 
 $(document).ready(function() {
 
-    MIDI.loadPlugin({
-        soundfontUrl: "/static/soundfont/",
-        instruments: [ "acoustic_grand_piano", "synth_drum" ],
-        callback: function() {
-            $('#play').html('\u25B6 Play');
-            $('#play').removeClass('pure-button-disabled');
-            $('#play').addClass('pure-button-primary');
-            var rhythm = $('#rhythm').val();
-            if (rhythm) {
-                var rhythm_json = JSON.parse(rhythm);
-                var new_sequence = [];
-                for (var key in rhythm_json.sequence) {
-                    var value = rhythm_json.sequence[key];
-                    if (value == "*") {
-                        if (rhythm_json.instrument == "synth_drum") {
-                            new_sequence.push(36 + getRandomArbitary(0, 25));
-                        } else if (rhythm_json.instrument == "acoustic_grand_piano") {
-                            new_sequence.push(getRandomArbitary(0, 128));
-                        }
-                    } else if (rhythm_json.notes[value]) {
-                        new_sequence.push(rhythm_json.notes[value]);
-                    } else {
-                        new_sequence.push(value);
-                    }
-                }
-                notes = [[new_sequence, rhythm_json.instrument]];
-                playMusic();
-            }
+    MIDI.audioDetect(function(data){
+        var instruments = ["acoustic_grand_piano"];
+        if (data['audio/ogg']) {
+            instruments.push("synth_drum");
+            drum_enabled = true;
         }
+        MIDI.loadPlugin({
+            soundfontUrl: "/static/soundfont/",
+            instruments: instruments,
+            callback: function() {
+                $('#play').html('\u25B6 Play');
+                $('#play').removeClass('pure-button-disabled');
+                $('#play').addClass('pure-button-primary');
+                var rhythm = $('#rhythm').val();
+                if (rhythm) {
+                    var rhythm_json = JSON.parse(rhythm);
+                    var new_sequence = [];
+                    for (var key in rhythm_json.sequence) {
+                        var value = rhythm_json.sequence[key];
+                        if (value == "*") {
+                            if (rhythm_json.instrument == "synth_drum") {
+                                new_sequence.push(36 + getRandomArbitary(0, 25));
+                            } else if (rhythm_json.instrument == "acoustic_grand_piano") {
+                                new_sequence.push(getRandomArbitary(0, 128));
+                            }
+                        } else if (rhythm_json.notes[value]) {
+                            new_sequence.push(rhythm_json.notes[value]);
+                        } else {
+                            new_sequence.push(value);
+                        }
+                    }
+                    notes = [[new_sequence, rhythm_json.instrument]];
+                    playMusic();
+                }
+            }
+        });
     });
+
+
 
     $('#play').click(function() {
         playMusic();
