@@ -1,4 +1,4 @@
-/*global $ MIDI */
+/*global $ MIDI $SCRIPT_ROOT */
 var sat_data,
     notes = [],
     piano_minor = [0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60, 63, 67, 72, 75, 79, 84, 87, 91, 96, 99, 103, 108, 111, 115, 120, 123, 127],
@@ -47,7 +47,7 @@ var fetch_satellites = function() {
     var $location_form = $('#location_form'),
         lat = $location_form.data('lat'),
         lng = $location_form.data('lng');
-    $.get('/ajax/satellites',
+    $.get($SCRIPT_ROOT + '/ajax/satellites',
           {lat: lat,
            lng: lng},
           function(data) {
@@ -101,7 +101,7 @@ var play_satellites = function() {
 $(document).ready(function() {
 
     MIDI.loadPlugin({
-        soundfontUrl: "/static/soundfont/",
+        soundfontUrl: $SCRIPT_ROOT + "/static/soundfont/",
         instruments: [ "acoustic_grand_piano", "synth_drum" ],
         callback: function() {
             $('#play').html('\u25B6 Play');

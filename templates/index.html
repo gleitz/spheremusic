@@ -5,26 +5,28 @@
         <link href='http://fonts.googleapis.com/css?family=Monsieur+La+Doulaise' rel='stylesheet' type='text/css'>
 
         <!-- midi.js package -->
-         <script src="./static/js/MIDI/AudioDetect.js" type="text/javascript"></script>
-         <script src="./static/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
-         <script src="./static/js/MIDI/Plugin.js" type="text/javascript"></script>
-         <script src="./static/js/MIDI/Player.js" type="text/javascript"></script>
-         <script src="./static/js/Window/DOMLoader.XMLHttp.js" type="text/javascript"></script>
-         <script src="./static/js/Window/DOMLoader.script.js" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='js/MIDI/AudioDetect.js') }}" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='js/MIDI/LoadPlugin.js') }}" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='js/MIDI/Plugin.js') }}" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='js/MIDI/Player.js') }}" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='js/Window/DOMLoader.XMLHttp.js') }}" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='js/Window/DOMLoader.script.js') }}" type="text/javascript"></script>
          <!-- extras -->
-         <script src="./static/inc/Base64.js" type="text/javascript"></script>
-         <script src="./static/inc/base64binary.js" type="text/javascript"></script>
+         <script src="{{ url_for('static', filename='inc/Base64.js') }}" type="text/javascript"></script>
+         <script src="{{ url_for('static', filename='inc/base64binary.js') }}" type="text/javascript"></script>
 
          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 
-        <script type="text/javascript" src="./static/js/Three.js"></script>
-        <script type="text/javascript" src="./static/js/RequestAnimationFrame.js"></script>
-        <script type="text/javascript" src="./static/js/Stats.js"></script>
-        <script type="text/javascript" src="./static/js/Tween.js"></script>
-        <script type="text/javascript" src="./static/js/Sparks.js"></script>
-        <script type="text/javascript" src="./static/js/CanvasShaders.js"></script>
-        <script src="./static/js/page.js" type="text/javascript"></script>
-
+         <script type="text/javascript" src="{{ url_for('static', filename='js/Three.js') }}"></script>
+         <script type="text/javascript" src="{{ url_for('static', filename='js/RequestAnimationFrame.js') }}"></script>
+         <script type="text/javascript" src="{{ url_for('static', filename='js/Stats.js') }}"></script>
+         <script type="text/javascript" src="{{ url_for('static', filename='js/Tween.js') }}"></script>
+         <script type="text/javascript" src="{{ url_for('static', filename='js/Sparks.js') }}"></script>
+         <script type="text/javascript" src="{{ url_for('static', filename='js/CanvasShaders.js') }}"></script>
+         <script src="{{ url_for('static', filename='js/page.js') }}" type="text/javascript"></script>
+         <script type=text/javascript>
+             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+         </script>
         <style>
          #viz{
             position: absolute;

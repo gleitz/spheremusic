@@ -4,8 +4,10 @@ import json
 import satellites
 import pygeoip
 from pygeocoder import Geocoder
+from flaskutil import ReverseProxied
 
 app = Flask(__name__)
+app.wsgi_app = ReverseProxied(app.wsgi_app)
 app.config.from_object({'SEND_FILE_MAX_AGE_DEFAULT': 0})
 
 GIC  = pygeoip.GeoIP('ip_database/GeoLiteCity.dat')
@@ -74,4 +76,4 @@ if __name__ == "__main__":
     debug = False
     if len(sys.argv) > 1 and sys.argv[1] == 'debug':
         debug = True
-    app.run(host='0.0.0.0', debug=debug, port=1337)
+    app.run(host='0.0.0.0', debug=debug, port=1338)
