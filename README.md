@@ -30,4 +30,3 @@ Notes
 -  Satellite data from [Celestrak](http://celestrak.com).
 -  Uses [MIDI.js](http://mudcu.be/midi-js/) for HTML5 audio.
 -  Uses [sparks.js](https://github.com/zz85/sparks.js/) for visualization.
-
