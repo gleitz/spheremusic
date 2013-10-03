@@ -1,18 +1,25 @@
-/*global $ MIDI $SCRIPT_ROOT */
+/*global $ MIDI $SCRIPT_ROOT createNoteParticle */
 var sat_data,
     notes = [],
     piano_minor = [0, 3, 7, 12, 15, 19, 24, 27, 31, 36, 39, 43, 48, 51, 55, 60, 63, 67, 72, 75, 79, 84, 87],
-    drums = [36],
-    instruments = [ "accordion", "acoustic_bass", "acoustic_grand_piano", "acoustic_guitar_nylon", "acoustic_guitar_steel", "agogo", "alto_sax", "applause", "bag_pipe", "banjo", "baritone_sax", "bassoon", "bird_tweet", "bright_acoustic_piano", "celesta", "cello", "choir_aahs", "church_organ", "clarinet", "clavichord", "contrabass", "drawbar_organ", "dulcimer", "electric_bass_fi", "electric_grand_piano", "electric_guitar_clean", "electric_guitar_muted", "electric_piano_1", "electric_piano_2", "english_horn", "fiddle", "french_horn", "fretless_bass", "fx_1_rain", "fx_2_soundtrack", "fx_3_crystal", "fx_4_atmosphere", "fx_5_brightness", "fx_6_goblins", "fx_7_echoes", "fx_8_scifi", "glockenspiel", "guitar_fret_noise", "guitar_harmonics", "gunshot", "harmonica", "harpsichord", "helicopter", "honkytonk_piano", "kalimba", "koto", "lead_1_square", "lead_2_sawtooth", "lead_3_calliope", "lead_4_chiff", "lead_5_charang", "lead_6_voice", "lead_7_fifths", "lead_8_bass_lead", "marimba", "melodic_tom", "music_box", "muted_trumpet", "oboe", "ocarina", "orchestra_hit", "orchestral_harp", "overdriven_guitar", "pad_1_new_age", "pad_2_warm", "pad_3_polysynth", "pad_4_choir", "pad_5_bowed", "pad_6_metallic", "pad_7_halo", "pad_8_sweep", "pan_flute", "percussive_organ", "piccolo", "pizzicato_strings", "recorder", "reed_organ", "reverse_cymbal", "rock_organ", "seashore", "shakuhachi", "shamisen", "shanai", "slap_bass_1", "slap_bass_2", "soprano_sax", "steel_drums", "string_ensemble_1", "string_ensemble_2", "synth_bass_1", "synth_bass_2", "synthbrass_1", "synthbrass_2", "synthstrings_1", "synthstrings_2", "taiko_drum", "telephone_ring", "tenor_sax", "timpani", "tinkle_bell", "tremolo_strings", "trombone", "trumpet", "tubular_bells", "vibraphone", "viola", "violin" ],
-    n = 0,
-    ws;
+    // scales = {'minor': [0,2,3,5,7,8,10,12]},
+    scales = {'natural major': [0,2,4,5,7,9,11,12],'ionian': [0,2,4,5,7,9,11,12],'major': [0,2,4,5,7,9,11,12],'chromatic': [0,1,2,3,4,5,6,7,8,9,10,11,12],'spanish 8 tone': [0,1,3,4,5,6,8,10,12],'flamenco': [0,1,3,4,5,7,8,10,12],'symmetrical': [0,1,3,4,6,7,9,10,12],'inverted diminished': [0,1,3,4,6,7,9,10,12],'diminished': [0,2,3,5,6,8,9,11,12],'whole tone': [0,2,4,6,8,10,12],'augmented': [0,3,4,7,8,11,12],'3 semitone': [0,3,6,9,12],'4 semitone': [0,4,8,12],'locrian ultra': [0,1,3,4,6,8,9,12],'locrian super': [0,1,3,4,6,8,10,12],'indian': [0,1,3,4,7,8,10,12],'locrian': [0,1,3,5,6,8,10,12],'phrygian': [0,1,3,5,7,8,10,12],'neapolitan minor': [0,1,3,5,7,8,11,12],'javanese': [0,1,3,5,7,9,10,12],'neapolitan major': [0,1,3,5,7,9,11,12],'todi': [0,1,3,6,7,8,11,12],'persian': [0,1,4,5,6,8,11,12],'oriental': [0,1,4,5,6,9,10,12],'phrygian major': [0,1,4,5,7,8,10,12],'spanish': [0,1,4,5,7,8,10,12],'jewish': [0,1,4,5,7,8,10,12],'double harmonic': [0,1,4,5,7,8,11,12],'gypsy': [0,1,4,5,7,8,11,12],'byzantine': [0,1,4,5,7,8,11,12],'chahargah': [0,1,4,5,7,8,11,12],'marva': [0,1,4,6,7,9,11,12],'enigmatic': [0,1,4,6,8,10,11,12],'locrian natural': [0,2,3,5,6,8,10,12],'natural minor': [0,2,3,5,7,8,10,12],'minor': [0,2,3,5,7,8,10,12],'melodic minor': [0,2,3,5,7,9,11,12],'aeolian': [0,2,3,5,7,8,10,12],'algerian 2': [0,2,3,5,7,8,10,12],'hungarian minor': [0,2,3,6,7,8,11,12],'algerian': [0,2,3,6,7,8,11,12],'algerian 1': [0,2,3,6,7,8,11,12],'harmonic minor': [0,2,3,5,7,8,11,12],'mohammedan': [0,2,3,5,7,8,11,12],'dorian': [0,2,3,5,7,9,10,12],'hungarian gypsy': [0,2,3,6,7,8,11,12],'romanian': [0,2,3,6,7,9,10,12],'locrian major': [0,2,4,5,6,8,10,12],'arabian': [0,1,4,5,7,8,11,12],'hindu': [0,2,4,5,7,8,10,12],'ethiopian': [0,2,4,5,7,8,11,12],'mixolydian': [0,2,4,5,7,9,10,12],'mixolydian augmented': [0,2,4,5,8,9,10,12],'harmonic major': [0,2,4,5,8,9,11,12],'lydian minor': [0,2,4,6,7,8,10,12],'lydian dominant': [0,2,4,6,7,9,10,12],'overtone': [0,2,4,6,7,9,10,12],'lydian': [0,2,4,6,7,9,11,12],'lydian augmented': [0,2,4,6,8,9,10,12],'leading whole tone': [0,2,4,6,8,10,11,12],'blues': [0,3,5,6,7,10,12],'hungarian major': [0,3,4,6,7,9,10,12],'pb': [0,1,3,6,8,12],'balinese': [0,1,3,7,8,12],'pe': [0,1,3,7,8,12],'pelog': [0,1,3,7,10,12],'iwato': [0,1,5,6,10,12],'japanese': [0,1,5,7,8,12],'kumoi': [0,1,5,7,8,12],'hirajoshi': [0,2,3,7,8,12],'pa': [0,2,3,7,8,12],'pd': [0,2,3,7,9,12],'pentatonic major': [0,2,4,7,9,12],'chinese': [0,2,4,7,9,12],'chinese 1': [0,2,4,7,9,12],'mongolian': [0,2,4,7,9,12],'pfcg': [0,2,4,7,9,12],'egyptian': [0,2,3,6,7,8,11,12],'pentatonic minor': [0,3,5,7,10,12],'chinese 2': [0,4,6,7,11,12],'altered': [0,1,3,4,6,8,10,12],'bebop dominant': [0,2,4,5,7,9,10,11,12],'bebop dominant flatnine': [0,1,4,5,7,9,10,11,12],'bebop major': [0,2,4,5,7,8,9,11,12],'bebop minor': [0,2,3,5,7,8,9,10,12],'bebop tonic minor': [0,2,3,5,7,8,9,11,12]},
+    instruments = [],
+    current_note = 0;
+
+var getRandomNote = function(scale_arr) {
+    var note = randomChoice(scale_arr) + 12 * getRandomArbitary(0, 7);
+};
+
+function debug() {
+    window.console && console.log && console.log.apply(console, arguments);
+}
 
 function getRandomArbitary(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
 var playNoteAt = function(n) {
-
     var note_data;
     var note_instrument;
     var velocity;
@@ -33,8 +40,8 @@ var playNoteAt = function(n) {
 };
 
 var playMusic = function () {
-    playNoteAt(n);
-    n = (n + 1) % 16;
+    playNoteAt(current_note);
+    current_note = (current_note + 1) % 16;
     setTimeout(playMusic, 250);
 };
 
@@ -61,7 +68,7 @@ var arrayOf = function(n, times) {
     Array.apply(null, new Array(times)).map(Number.prototype.valueOf,n);
 };
 
-var random_choice = function(arr) {
+var randomChoice = function(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 };
 
@@ -79,10 +86,10 @@ var play_satellites = function() {
             tempo_bucket = Math.floor((sat.range - sat_data.min_range) / tempo_bucket_width) || 1;
         var note;
 
-        var instrument = random_choice(instruments);
-        var this_note = piano_minor[note_bucket] + getRandomArbitary(0, 87);
+        var instrument = randomChoice(instruments);
+        var this_note = piano_minor[note_bucket]; // + getRandomArbitary(0, 87);
         if (Math.random() < 0.15) {
-            instrument = random_choice(instrument);
+            instrument = randomChoice(instrument);
         }
         if (tempo_bucket == 4) {
             note = Array.apply(null, new Array(16)).map(Number.prototype.valueOf,this_note);
@@ -119,38 +126,47 @@ function shuffle(array) {
 
 $(document).ready(function() {
 
+    $.each(MIDI.GeneralMIDI.byName, function(k, v) {
+        instruments.push(k);
+    });
     instruments = shuffle(instruments).slice(0, 4);
     $.each(instruments, function(i, e) {
-        var instrumentname = MIDI.GeneralMIDI.byName[e].instrument;
-        $('#instruments').append($('<li>', {'text': instrumentname}));
+        var inst = MIDI.GeneralMIDI.byName[e];
+        if (inst) {
+            var instrumentname = inst.instrument;
+            $('#instruments').append($('<li>', {'text': instrumentname}));
+        } else {
+            debug("cannot find instrument ", e);
+        }
     });
+
+    var full_scales = [];
+    $.each(scales, function(scale_name, scale) {
+        var note = 0,
+            pos = 0,
+            base = 0,
+            full_scale = [],
+            scale_length = scale.length;
+        while (true) {
+            note = base + scale[pos];
+            if (note > 87) {
+                break;
+            }
+            full_scale.push(note);
+            pos = (pos + 1);
+            if (pos == scale_length - 1) {
+                base = base + 12;
+                pos = 0;
+            }
+        }
+        full_scales.push(full_scale);
+    });
+    piano_minor = shuffle(full_scales)[0];
     var rhythm = $('#rhythm').val();
     if (rhythm) {
         instruments = [];
         var rhythm_json = JSON.parse(rhythm);
         instruments.push(rhythm_json.instrument);
-        ws = new WebSocket("ws://localhost:1338/echo");
-        ws.onopen = function() {
-            alert("connected");
-            $('#rhythm').bind('keypress', function () {
-                var self = $(this);
-
-                clearTimeout(self.data('timeout'));
-
-                self.data('timeout', setTimeout(function() {
-                    alert(self.val());
-                    ws.send(self.val());
-                }, 500));
-            });
-        };
-        ws.onmessage = function (evt) {
-            var received_msg = evt.data;
-            alert("received message");
-            alert(received_msg);
-            $('#rhythm').val(received_msg);
-        };
-        ws.onclose = function() {
-        };
     }
     MIDI.loadPlugin({
         soundfontUrl: $SCRIPT_ROOT + "/static/soundfont/",
@@ -169,7 +185,7 @@ $(document).ready(function() {
                         for (var key in rhythm_json.sequence) {
                             var value = rhythm_json.sequence[key];
                             if (value == "*") {
-                                new_sequence.push(random_choice(piano_minor));
+                                new_sequence.push(randomChoice(piano_minor));
                             } else if (rhythm_json.notes[value]) {
                                 new_sequence.push(rhythm_json.notes[value]);
                             } else {
@@ -183,7 +199,6 @@ $(document).ready(function() {
                 setTimeout(updateRhythm, 500);
             };
             updateRhythm();
-            playMusic();
         }
     });
 

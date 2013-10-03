@@ -41,17 +41,19 @@
         <div class="pure-g-r">
                 <div class="pure-u-1-2">
                     <img src="http://i.imgur.com/K7JmNq3.png">
+                    {% if not rhythm %}
                     <ul id="satellites"></ul>
+                    <!-- <ul id="instruments"> -->
+                    {% endif %}
                 </div>
                 <div class="pure-u-1-2">
                     <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Satellite Symphony</h1>
-                    <ul id="instruments"></ul>
                     {% if rhythm %}
                         {% if error %}
                         <h3 style="color: red;">{{error}}</h3>
                         {% endif %}
                     <form method="get">
-                    <textarea rows="30" id="rhythm" cols="50" name="rhythm">{{ rhythm }}</textarea>
+                    <textarea rows="20" id="rhythm" cols="50" name="rhythm">{{ rhythm }}</textarea>
                     <input value="Submit" type="submit">
                     </form>
                     {% else %}
@@ -59,9 +61,8 @@
                         <input style="width: 400px; background: inherit;" name="address" type="text" value="{{address}}">
                         <input value="Change" class="pure-button" type="submit">
                     </form>
-                    <button class="pure-button pure-button-disabled" id="play">Loading..</button>
                     {% endif %}
-
+                    <button class="pure-button pure-button-disabled" id="play">Loading..</button>
                 </div>
         </div>
 
@@ -319,6 +320,12 @@
             });
 
         </script>
+        {% if rhythm %}
+        <script src="http://localhost:5000/bcsocket.js"></script>
+        <script src="http://localhost:5000/share.js"></script>
+        <script src="http://localhost:5000/textarea.js"></script>
+        {% endif %}
+        <script src="{{ url_for('static', filename='js/share.js') }}" type="text/javascript"></script>
 </body>
 
 </html>
