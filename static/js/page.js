@@ -129,7 +129,7 @@ $(document).ready(function() {
     $.each(MIDI.GeneralMIDI.byName, function(k, v) {
         instruments.push(k);
     });
-    instruments = shuffle(instruments).slice(0, 4);
+    instruments = shuffle(instruments).slice(0, 3);
     $.each(instruments, function(i, e) {
         var inst = MIDI.GeneralMIDI.byName[e];
         if (inst) {
