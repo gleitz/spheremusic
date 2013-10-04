@@ -45,7 +45,7 @@ var playMusic = function () {
     setTimeout(playMusic, 250);
 };
 
-var fetch_satellites = function() {
+var fetchSatellites = function() {
     var rhythm = $('#rhythm').val();
     if (rhythm) {
         return;
@@ -60,9 +60,8 @@ var fetch_satellites = function() {
               sat_data = data;
               play_satellites();
           });
+    setTimeout(fetchSatellites, 1000);
 };
-
-setInterval(fetch_satellites, 1000);
 
 var arrayOf = function(n, times) {
     Array.apply(null, new Array(times)).map(Number.prototype.valueOf,n);
@@ -175,10 +174,13 @@ $(document).ready(function() {
             $('#play').html('\u25B6 Play');
             $('#play').removeClass('pure-button-disabled');
             $('#play').addClass('pure-button-primary');
-
+            var rhythm = $('#rhythm').val();
+            if (rhythm) {
+                fetchSatellites();
+            }
             var updateRhythm = function() {
                 try {
-                    var rhythm = $('#rhythm').val();
+                    rhythm = $('#rhythm').val();
                     if (rhythm) {
                         var rhythm_json = JSON.parse(rhythm);
                         var new_sequence = [];
