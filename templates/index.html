@@ -141,6 +141,7 @@
                 noteEmitter.addInitializer(new SPARKS.Lifetime(12,12));
 
                 var h = 0;
+                function hsv2hsl(a,b,c){return[a,b*c/((a=(2-b)*c)<1?a:2-a),a/2]}
 
                 var callback = function() {
 
@@ -188,7 +189,6 @@
                 sparksEmitter.addCallback("dead", function(particle) {
                     particle.target.visible = false; // is this a work around?
                     group.remove(particle.target);
-
                 });
 
                 /*
@@ -321,9 +321,9 @@
 
         </script>
         {% if rhythm %}
-        <script src="http://localhost:5000/bcsocket.js"></script>
-        <script src="http://localhost:5000/share.js"></script>
-        <script src="http://localhost:5000/textarea.js"></script>
+        <script src="http://gleitzman.com/apps/globalshare/bcsocket.js"></script>
+        <script src="http://gleitzman.com/apps/globalshare/share.js"></script>
+        <script src="http://gleitzman.com/apps/globalshare/textarea.js"></script>
         {% endif %}
         <script src="{{ url_for('static', filename='js/share.js') }}" type="text/javascript"></script>
 </body>
