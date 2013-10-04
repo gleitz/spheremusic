@@ -174,10 +174,7 @@ $(document).ready(function() {
             $('#play').html('\u25B6 Play');
             $('#play').removeClass('pure-button-disabled');
             $('#play').addClass('pure-button-primary');
-            var rhythm = $('#rhythm').val();
-            if (rhythm) {
-                fetchSatellites();
-            }
+            fetchSatellites();
             var updateRhythm = function() {
                 try {
                     rhythm = $('#rhythm').val();
