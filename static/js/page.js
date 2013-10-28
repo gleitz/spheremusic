@@ -65,7 +65,7 @@ var fetchSatellites = function() {
 };
 
 var arrayOf = function(n, times) {
-    Array.apply(null, new Array(times)).map(Number.prototype.valueOf,n);
+    return Array.apply(null, new Array(times)).map(Number.prototype.valueOf,n);
 };
 
 var randomChoice = function(arr) {
