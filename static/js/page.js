@@ -169,7 +169,7 @@ $(document).ready(function() {
         instruments.push(rhythm_json.instrument);
     }
     MIDI.loadPlugin({
-        soundfontUrl: $SCRIPT_ROOT + "/static/soundfont/",
+        soundfontUrl: $SCRIPT_ROOT + "/static/midi-js-soundfonts/FluidR3_GM/",
         instruments: instruments,
         callback: function() {
             $('#play').html('\u25B6 Play');

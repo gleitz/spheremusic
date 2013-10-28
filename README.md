@@ -14,6 +14,8 @@ Usage
     git clone https://github.com/gleitz/spheremusic.git
     cd spheremusic
     pip install -r requirements.txt
+    git submodule init
+    git submodule update
     python app.py [debug]
 
 Then visit [http://localhost:1337](http://localhost:1337).
@@ -31,4 +33,5 @@ Notes
 
 -  Satellite data from [Celestrak](http://celestrak.com).
 -  Uses [MIDI.js](http://mudcu.be/midi-js/) for HTML5 audio.
+-  Uses [midi-js-soundfonts](https://github.com/gleitz/midi-js-soundfonts) for instruments.
 -  Uses [sparks.js](https://github.com/zz85/sparks.js/) for visualization.
