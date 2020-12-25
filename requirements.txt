@@ -2,7 +2,7 @@ certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
 decorator==4.4.2
-ephem==3.7.7.1
+ephem==3.7.7.0
 Flask==1.1.2
 future==0.18.2
 geocoder==1.38.1
