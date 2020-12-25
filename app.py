@@ -2,7 +2,8 @@ import sys
 import json
 
 from flask import Flask, render_template, jsonify, request
-import pygeoip
+import geoip2.database
+import geoip2.errors
 import geocoder
 
 import satellites
@@ -13,8 +14,7 @@ app = Flask(__name__)
 app.wsgi_app = ReverseProxied(app.wsgi_app)
 app.config.from_object({'SEND_FILE_MAX_AGE_DEFAULT': 0})
 
-GIC = pygeoip.GeoIP('ip_database/GeoLiteCity.dat')
-
+reader = geoip2.database.Reader('ip_database/GeoLite2-City.mmdb')
 
 @app.route("/")
 def home():
@@ -38,11 +38,15 @@ def home():
             address = result.json['address']
     if not lat and not lng:
         ip_address = request.remote_addr
-        user_loc = GIC.record_by_addr(ip_address)
-        if user_loc and user_loc.get('latitude'):
-            lat = user_loc['latitude']
-            lng = user_loc['longitude']
-            address = '({0}, {1})'.format(lat, lng)
+        print(ip_address)
+        try:
+            user_loc = reader.city(ip_address)
+            if user_loc and user_loc.location:
+                lat = user_loc.location.latitude
+                lng = user_loc.location.longitude
+                address = '({0}, {1})'.format(lat, lng)
+        except geoip2.errors.AddressNotFoundError:
+            pass
     if not lat and not lng:
         lat = 37.7701
         lng = -122.4664
