@@ -1,6 +1,6 @@
 # Symphony of Satellites
 
-![Screenshot of the webpage](https://www.dropbox.com/s/ycscm1682xe2i79/satellitesymphony-large.png?dl=1)
+![Screenshot of the webpage](https://i.imgur.com/BlgDujW.png)
 
 ## Science Hack Day SF 2013
 
@@ -16,8 +16,6 @@ Usage
     git clone https://github.com/gleitz/spheremusic.git
     cd spheremusic
     pip install -r requirements.txt
-    git submodule init
-    git submodule update
     python app.py [debug]
 
 Then visit [http://localhost:1337](http://localhost:1337).
