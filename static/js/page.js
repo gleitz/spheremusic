@@ -31,12 +31,15 @@ var playNoteAt = function(n) {
         note_instrument = e[1];
         velocity = getRandomArbitary(30, 127);
         value = note_data[n];
-        if (!MIDI.GeneralMIDI.byName[note_instrument]) {
+        if (!MIDI.GM.byName[note_instrument]) {
             return -1;
         }
-        MIDI.programChange(0, MIDI.GeneralMIDI.byName[note_instrument].number);
-        createNoteParticle(value, velocity, 1.1);
-        MIDI.noteOn(0, value, velocity);
+        MIDI.programChange(0, MIDI.GM.byName[note_instrument].number);
+        if (value > -1) {
+          console.log(value)
+          createNoteParticle(value, velocity, 1.1);
+          MIDI.noteOn(0, value, velocity);
+        }
     });
 };
 
@@ -95,7 +98,7 @@ var playSatellites = function() {
         instrument = '';
       }
         if (tempo_bucket == 4) {
-            note = Array.apply(null, new Array(16)).map(Number.prototype.valueOf,this_note);
+          note = Array.apply(null, Array(16)).map(() => Math.random() > 0.50 ? this_note : -1)
         } else if (tempo_bucket == 3) {
             note = [this_note, -1,this_note, -1,this_note, -1,this_note, -1,this_note, -1,this_note, -1,this_note, -1,this_note, -1];
         } else if (tempo_bucket == 2) {
@@ -128,16 +131,16 @@ function shuffle(array) {
 }
 
 $(document).ready(function() {
-
-    $.each(MIDI.GeneralMIDI.byName, function(k, v) {
+    fetchSatellites();
+    $.each(MIDI.GM.byName, function(k, v) {
         instruments.push(k);
     });
     instruments = shuffle(instruments).slice(0, getRandomArbitary(3, 6));
     $.each(instruments, function(i, e) {
-        var inst = MIDI.GeneralMIDI.byName[e];
+        var inst = MIDI.GM.byName[e];
         if (inst) {
             var instrumentname = inst.instrument;
-            $('#instruments').append($('<li>', {'text': instrumentname}));
+            setTimeout(() => $('#instruments').append($('<li>', {'text': instrumentname})), 1000 * (i + 1))
         } else {
             debug("cannot find instrument ", e);
         }
@@ -174,11 +177,10 @@ $(document).ready(function() {
     MIDI.loadPlugin({
       soundfontUrl: "https://gleitz.github.io/midi-js-soundfonts/MusyngKite/",
         instruments: instruments,
-        callback: function() {
+        onsuccess: function() {
             $('#play').html('\u25B6 Play');
             $('#play').removeClass('pure-button-disabled');
             $('#play').addClass('pure-button-primary');
-            fetchSatellites();
             var updateRhythm = function() {
                 try {
                     rhythm = $('#rhythm').val();
@@ -206,6 +208,7 @@ $(document).ready(function() {
     });
 
     $('#play').click(function() {
+        $('#play').html('\u25B6 Playing...');
         playMusic();
     });
 
