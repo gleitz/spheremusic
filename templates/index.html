@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <head>
         <title>Symphony of Satellites</title>
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
-        <link href="http://fonts.googleapis.com/css?family=Monsieur+La+Doulaise" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pure-min.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Monsieur+La+Doulaise" rel="stylesheet" type="text/css">
         <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 
         <!-- midi.js package -->
@@ -35,7 +35,7 @@
 <body style="overflow: hidden" data-rhythm="{{rhythm}}">
         <div class="pure-g-r">
                 <div class="pure-u-1-2">
-                    <img src="http://i.imgur.com/K7JmNq3.png">
+                    <img src="https://i.imgur.com/K7JmNq3.png">
                     {% if not rhythm %}
                     <div style="width: 30%; float: left">
                       <h2 style="margin-left: 1rem;">Satellites</h2>
