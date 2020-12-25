@@ -1,6 +1,6 @@
 # Symphony of Satellites
 
-![Screenshot of the webpage](https://dl.dropboxusercontent.com/u/101688/website/img/satellitesymphony-large.png)
+![Screenshot of the webpage](https://www.dropbox.com/s/ycscm1682xe2i79/satellitesymphony-large.png?dl=1)
 
 ## Science Hack Day SF 2013
 
