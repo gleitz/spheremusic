@@ -38,14 +38,13 @@ def home():
             address = result.json['address']
     if not lat and not lng:
         ip_address = request.remote_addr
-        print(ip_address)
         try:
             user_loc = reader.city(ip_address)
             if user_loc and user_loc.location:
                 lat = user_loc.location.latitude
                 lng = user_loc.location.longitude
                 address = '({0}, {1})'.format(lat, lng)
-        except geoip2.errors.AddressNotFoundError:
+        except Exception:
             pass
     if not lat and not lng:
         lat = 37.7701
