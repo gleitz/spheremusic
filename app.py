@@ -49,7 +49,7 @@ def home():
     if not lat and not lng:
         lat = 37.7701
         lng = -122.4664
-        address = 'California Academy of Sciences, San Francisco, CA'
+        address = 'Cal Academy of Sciences'
     return render_template('index.html', lat=lat, lng=lng, address=address, rhythm=rhythm, error=error)
 
 
