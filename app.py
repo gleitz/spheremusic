@@ -1,16 +1,20 @@
-from flask import Flask, render_template, jsonify, request, url_for, redirect
 import sys
 import json
-import satellites
+
+from flask import Flask, render_template, jsonify, request
 import pygeoip
-from pygeocoder import Geocoder
+import geocoder
+
+import satellites
+
 from flaskutil import ReverseProxied
 
 app = Flask(__name__)
 app.wsgi_app = ReverseProxied(app.wsgi_app)
 app.config.from_object({'SEND_FILE_MAX_AGE_DEFAULT': 0})
 
-GIC  = pygeoip.GeoIP('ip_database/GeoLiteCity.dat')
+GIC = pygeoip.GeoIP('ip_database/GeoLiteCity.dat')
+
 
 @app.route("/")
 def home():
@@ -22,17 +26,16 @@ def home():
         if rhythm:
             rhythm = json.loads(rhythm)
             rhythm = json.dumps(rhythm, indent=4, sort_keys=True)
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)
         error = "Invalid JSON!"
     address = request.args.get('address')
     if address:
-        results = Geocoder.geocode(address)
-        if results and len(results) > 0:
-            coords = results[0].coordinates
-            lat = coords[0]
-            lng = coords[1]
-            address = results[0].formatted_address
+        result = geocoder.arcgis(address)
+        if result and result.json:
+            lat = result.json['lat']
+            lng = result.json['lng']
+            address = result.json['address']
     if not lat and not lng:
         ip_address = request.remote_addr
         user_loc = GIC.record_by_addr(ip_address)
@@ -43,17 +46,18 @@ def home():
     if not lat and not lng:
         lat = 37.7701
         lng = -122.4664
-        address = 'California Academy of Sciences, San Francisco, CA'.format(lat, lng)
+        address = 'California Academy of Sciences, San Francisco, CA'
     return render_template('index.html', lat=lat, lng=lng, address=address, rhythm=rhythm, error=error)
 
-@app.route("/ajax/satellites", methods = ['GET'])
+
+@app.route("/ajax/satellites", methods=['GET'])
 def ajax_satellites():
     lat = str(request.args.get('lat', ''))
     lng = str(request.args.get('lng', ''))
     sats = list(satellites.get_satellites(lat=lat, lng=lng))[:20]
-    min_velocity = sys.maxint
+    min_velocity = sys.maxsize
     max_velocity = 0
-    min_range = sys.maxint
+    min_range = sys.maxsize
     max_range = 0
     for sat in sats:
         velocity = abs(sat['velocity'])
@@ -71,6 +75,7 @@ def ajax_satellites():
                     'max_velocity': max_velocity,
                     'min_range': min_range,
                     'max_range': max_range})
+
 
 if __name__ == "__main__":
     debug = False

@@ -7,17 +7,18 @@ import requests_cache
 import ephem
 import datetime
 from math import degrees
-import json
 from calendar import timegm
 
 requests_cache.install_cache('satellite', backend='memory', expire_after=300)
 
+
 def chunks(l, n):
     """ Yield successive n-sized chunks from l"""
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i+n]
 
-def get_satellites(only_visible = True, now=None, lat=None, lng=None):
+
+def get_satellites(only_visible=True, now=None, lat=None, lng=None):
     SAT_BRIGHTEST = 'http://celestrak.com/NORAD/elements/visual.txt'
     SAT_GEO = 'http://celestrak.com/NORAD/elements/geo.txt'
     SAT_DEBRIS = 'http://celestrak.com/NORAD/elements/1999-025.txt'
@@ -36,7 +37,8 @@ def get_satellites(only_visible = True, now=None, lat=None, lng=None):
         for tle in chunks(data, 3):
             if len(tle) != 3:
                 continue
-            yield get_location(tle, now = now)
+            yield get_location(tle, now=now)
+
 
 def get_location(tle, now=None, lat=None, lng=None):
     """Compute the current location of the ISS"""

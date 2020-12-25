@@ -89,8 +89,11 @@ var playSatellites = function() {
         var instrument = randomChoice(instruments);
         var this_note = piano_minor[note_bucket]; // + getRandomArbitary(0, 87);
         if (Math.random() < 0.15) {
-            instrument = randomChoice(instrument);
+            instrument = randomChoice(instruments);
         }
+      if (Math.random() < 0.05) {
+        instrument = '';
+      }
         if (tempo_bucket == 4) {
             note = Array.apply(null, new Array(16)).map(Number.prototype.valueOf,this_note);
         } else if (tempo_bucket == 3) {
@@ -129,7 +132,7 @@ $(document).ready(function() {
     $.each(MIDI.GeneralMIDI.byName, function(k, v) {
         instruments.push(k);
     });
-    instruments = shuffle(instruments).slice(0, 3);
+    instruments = shuffle(instruments).slice(0, getRandomArbitary(3, 6));
     $.each(instruments, function(i, e) {
         var inst = MIDI.GeneralMIDI.byName[e];
         if (inst) {
@@ -169,7 +172,7 @@ $(document).ready(function() {
         instruments.push(rhythm_json.instrument);
     }
     MIDI.loadPlugin({
-        soundfontUrl: $SCRIPT_ROOT + "/static/midi-js-soundfonts/FluidR3_GM/",
+      soundfontUrl: "https://gleitz.github.io/midi-js-soundfonts/MusyngKite/",
         instruments: instruments,
         callback: function() {
             $('#play').html('\u25B6 Play');
