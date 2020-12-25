@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
         <title>Symphony of Satellites</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/pure-min.css') }}">
         <link href="https://fonts.googleapis.com/css?family=Monsieur+La+Doulaise" rel="stylesheet" type="text/css">
         <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -28,13 +29,24 @@
             top: 0;
             z-index: -1;
          }
+         @media (max-width: 767px) {
+            .pure-g-r {
+               display: flex; flex-direction: column;
+            }
+            body {
+               padding: 10px;
+            }
+            #player { order: 1 }
+            #info { order: 2 }
+            #address { width: auto !important; }
+         }
          </style>
 
 </head>
 
 <body style="overflow: hidden" data-rhythm="{{rhythm}}">
         <div class="pure-g-r">
-                <div class="pure-u-1-2">
+                <div class="pure-u-1-2" id="info">
                     <img src="https://i.imgur.com/K7JmNq3.png">
                     {% if not rhythm %}
                     <div style="width: 30%; float: left">
@@ -47,7 +59,7 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="pure-u-1-2">
+                <div class="pure-u-1-2" id="player">
                     <h1 style="font-family: 'Monsieur La Doulaise', cursive; font-size: 56pt; font-weight: normal; text-shadow: 1px 1px 1px #fff">Symphony of Satellites</h1>
                     <a style="position: absolute; bottom:10px; right: 10px; font-size: 12px;" href="http://blog.gleitzman.com/post/63283830260/midi-js-playing-audio-in-the-browser-with-javascript">learn more...</a>
                     {% if rhythm %}
@@ -60,7 +72,7 @@
                     </form>
                     {% else %}
                     <form data-lat="{{lat}}" data-lng="{{lng}}" id="location_form" method="get" style="margin-bottom: 1em;">
-                        <input style="width: 400px; background: inherit;" name="address" type="text" value="{{address}}">
+                        <input style="width: 400px; background: inherit;" name="address" type="text" value="{{address}}" id="address">
                         <input value="Change" class="pure-button" type="submit">
                     </form>
                     {% endif %}
