@@ -6,7 +6,7 @@ chardet==3.0.4
 click==7.1.2
 decorator==4.4.2
 ephem==3.7.7.0
-Flask==1.1.2
+Flask==2.3.2
 future==0.18.3
 geocoder==1.38.1
 geoip2==4.1.0
