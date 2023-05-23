@@ -20,7 +20,7 @@ multidict==5.1.0
 pyephem==3.7.7.0
 pygeoip==0.3.2
 ratelim==0.1.6
-requests==2.25.1
+requests==2.31.0
 requests-cache==0.5.2
 six==1.15.0
 typing-extensions==3.7.4.3
