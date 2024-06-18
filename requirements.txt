@@ -24,6 +24,6 @@ requests==2.31.0
 requests-cache==0.5.2
 six==1.15.0
 typing-extensions==3.7.4.3
-urllib3==1.26.5
+urllib3==1.26.19
 Werkzeug==2.3.8
 yarl==1.9.4
